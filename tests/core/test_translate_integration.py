@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tests.translate_support import TOOLS, setUpModule, tearDownModule  # noqa: F401
+from tests.tools.translate.support import TOOLS, setUpModule, tearDownModule  # noqa: F401
 
 import os
 from pathlib import Path
@@ -83,7 +83,7 @@ class NyxuriTemplateTests(unittest.TestCase):
         self.assertEqual(tools["desc"], f"Folder · {len(children)} Tools")
 
     def test_alt_e_goes_through_the_shell_action_gateway(self) -> None:
-        binds = (_REPO / "configs/niri/binds.kdl").read_text(encoding="utf-8")
+        binds = (_REPO / "units/niri/binds.kdl").read_text(encoding="utf-8")
         lines = [line for line in binds.splitlines() if re.match(r"\s*Alt\+E\b", line)]
         self.assertEqual(len(lines), 1)
         self.assertIn('spawn "~/.config/niri/scripts/shell-action.sh" "translate"', lines[0])

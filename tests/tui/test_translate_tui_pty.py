@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from tests.test_shell_runtime import presentation_budget
-from tests.translate_support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.shell.test_shell_runtime import presentation_budget
+from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import fcntl
 import os

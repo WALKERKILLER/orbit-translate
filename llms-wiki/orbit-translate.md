@@ -59,7 +59,7 @@ TUI 使用同一加载器，终端保留默认（透明）背景，`NO_COLOR=1` 
 
 - 路径：`${XDG_CONFIG_HOME:-~/.config}/noctalia/tools/orbit-translate__custom__.toml`。
 - 仓库附带同名模板（免费预设：仅启用 MyMemory，`en → zh-CN`）。Dunder 规则：首次部署后冻结，
-  后续 update / preset 切换保留用户版本（见 [file-preservation](file-preservation.md)）。
+  后续 update / preset 切换保留用户版本（见 [file-preservation](../file-preservation.md)）。
 - 根级键：`source` / `target` / `capture_timeout_ms` / `request_timeout_ms` / `max_chars` /
   `max_parallel` / `dismiss_after_ms` / `capture_primary` / `max_cards` / `show_source` / `auto_copy`；
   渠道为 `[[providers]]` 数组（`id` / `name` / `type` / `enabled` + 类型专属字段）。
@@ -81,7 +81,7 @@ Key 经 stdin 传递，不进 argv 或日志；钱包不可用时安全失败，
 
 ## 设置 TUI
 
-标准库 `curses`，沿用 [tui-switcher](tui-switcher.md) 的视觉语言（`❯` 指针、`[✓]`/`[ ]` 启停、
+标准库 `curses`，沿用 [tui-switcher](../archive/tui-switcher.md) 的视觉语言（`❯` 指针、`[✓]`/`[ ]` 启停、
 `── 标题 ──` 分区、`[键] 操作` 提示、圆角对话框）。`空格`开关、`a` 添加 AI 渠道、`m` 从 models.dev
 搜索提供商与模型、`e` 编辑、`K` 存 Key、`t` 示例测试、`d` 删除、`s` 显式保存、`?` 帮助。
 保存前与运行时同一套校验，创建 `0600` 备份后原子替换；外部修改冲突时拒绝覆盖。
@@ -97,7 +97,7 @@ Key 经 stdin 传递，不进 argv 或日志；钱包不可用时安全失败，
 ## 依赖
 
 `configs/noctalia/manifest.toml` 声明 `python-gobject`、`gtk-layer-shell`、`wl-clipboard`（`wl-paste`），
-PKGBUILD 由 `gen-deps.py --update` 汇聚（见 [packaging](packaging.md)）。`kwallet-query` /
+PKGBUILD 由 `gen-deps.py --update` 汇聚（见 [packaging](../archive/packaging.md)）。`kwallet-query` /
 `secret-tool` / Ollama 为可选。
 
 ## 测试

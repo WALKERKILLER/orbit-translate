@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tests.translate_support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import curses
 import gzip
@@ -18,7 +18,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from orbit_translate import catalog, tui
-from tests.test_translate_tui import FakeScreen
+from tests.tools.translate.tui.test_translate_tui import FakeScreen
 
 
 def _provider(provider_id: str, *, model: str = "fixture") -> catalog.CatalogProvider:

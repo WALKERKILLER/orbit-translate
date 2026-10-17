@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tests.translate_support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import unittest
 
