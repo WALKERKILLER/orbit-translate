@@ -13,7 +13,7 @@ Run the dependency check first — it opens no window:
 The tool reads the Wayland **PRIMARY** selection (`wl-paste --primary`), not the regular clipboard.
 
 - Check what the app actually provides: select something, then run `wl-paste --primary --no-newline`.
-- Some apps only fill the regular clipboard. PDF viewers are the usual suspect — tracked in [TRACKING_ISSUE](TRACKING_URL) (moved from [Nyxuri#142](https://github.com/ech678/Nyxuri/issues/142)).
+- Some apps only fill the regular clipboard. PDF viewers are the usual suspect — tracked in [orbit-translate#1](https://github.com/WALKERKILLER/orbit-translate/issues/1) (moved from [Nyxuri#142](https://github.com/ech678/Nyxuri/issues/142)).
 - `capture_primary = false` turns capture off entirely; set it back to `true`.
 
 ## No Results

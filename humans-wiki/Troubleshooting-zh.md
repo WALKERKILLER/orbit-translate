@@ -13,7 +13,7 @@
 工具读的是 Wayland **PRIMARY** 选区（`wl-paste --primary`），不是普通剪贴板。
 
 - 看看应用到底给了什么：选中一段文字，再运行 `wl-paste --primary --no-newline`。
-- 有些应用只写普通剪贴板，PDF 阅读器最常见——在 [TRACKING_ISSUE](TRACKING_URL) 跟踪（由 [Nyxuri#142](https://github.com/ech678/Nyxuri/issues/142) 迁来）。
+- 有些应用只写普通剪贴板，PDF 阅读器最常见——在 [orbit-translate#1](https://github.com/WALKERKILLER/orbit-translate/issues/1) 跟踪（由 [Nyxuri#142](https://github.com/ech678/Nyxuri/issues/142) 迁来）。
 - `capture_primary = false` 会彻底关闭捕获，改回 `true`。
 
 ## 没有结果
