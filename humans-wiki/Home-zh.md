@@ -4,6 +4,14 @@ Niri / Wayland 上的一次性划词翻译。选中文字、按快捷键、在�
 
 [English](Home)
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/popup-sentence.png" alt="多渠道并行译文" width="31%" />
+&nbsp;
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/popup-language-menu.png" alt="目标语言菜单" width="31%" />
+&nbsp;
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/popup-dictionary.png" alt="单词查询：译文 + 词典卡片" width="31%" />
+</p>
+
 ## 安装
 
 运行依赖（Arch 系）：

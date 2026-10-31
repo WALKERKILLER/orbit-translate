@@ -4,6 +4,14 @@ A one-shot selection translator for Niri / Wayland. Select text, press the short
 
 [简体中文](Home-zh)
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/popup-sentence.png" alt="Several channels side by side" width="31%" />
+&nbsp;
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/popup-language-menu.png" alt="Target language menu" width="31%" />
+&nbsp;
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/popup-dictionary.png" alt="Word lookup with dictionary cards" width="31%" />
+</p>
+
 ## Install
 
 Runtime dependencies (Arch-based):

@@ -22,6 +22,15 @@
 </p>
 
 <p>
+<img src="assets/screenshots/popup-sentence.png" alt="Several channels side by side" width="31%" />
+&nbsp;
+<img src="assets/screenshots/popup-language-menu.png" alt="Target language menu" width="31%" />
+&nbsp;
+<img src="assets/screenshots/popup-dictionary.png" alt="Word lookup with dictionary cards" width="31%" />
+</p>
+<p><sub>Several channels side by side · Target language menu opens downward · Word lookup: translation + dictionary cards</sub></p>
+
+<p>
 <sub><em>Born in <a href="https://github.com/ech678/Nyxuri">Nyxuri</a> · Read the <a href="https://github.com/WALKERKILLER/orbit-translate/wiki/Home">Wiki</a></em></sub>
 </p>
 <br />
@@ -82,6 +91,8 @@ orbit-translate
 ├── orbit_translate/            # The program (stdlib + GTK3 only)
 ├── config/                     # User config template (free preset)
 ├── install.sh                  # Standalone install / uninstall
+├── scripts/                    # Dev scripts (screenshot rendering)
+├── assets/screenshots/         # README & Wiki screenshots
 ├── tests/                      # Contract tests (core / catalog / tui)
 ├── llms-wiki/                  # Architecture contracts & design decisions
 └── humans-wiki/                # User manual (synced to the GitHub Wiki)
@@ -92,6 +103,21 @@ orbit-translate
 ```bash
 ~/.config/noctalia/tools/orbit-translate.py --settings
 ```
+
+<table>
+  <tr>
+    <th width="60%">Channel settings TUI</th>
+    <th width="40%">Adding an AI channel: pick a protocol</th>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/tui-main.png" alt="Channel settings TUI" /></td>
+    <td><img src="assets/screenshots/tui-add.png" alt="AI protocol picker" /></td>
+  </tr>
+  <tr>
+    <td><sub>Channels on the left, details on the right: <code>❯</code> pointer, <code>[✓]</code> toggles, <code>[key] action</code> hints at the bottom, unsaved state in the title bar.</sub></td>
+    <td><sub>OpenAI Chat / Responses, Anthropic, Gemini and Ollama each get their own adapter; press <code>m</code> to prefill from models.dev.</sub></td>
+  </tr>
+</table>
 
 Channel toggles, AI protocols, API keys and the models.dev quick setup all live here. Field reference: [Configuration (Wiki)](https://github.com/WALKERKILLER/orbit-translate/wiki/Configuration).
 

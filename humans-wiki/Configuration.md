@@ -10,6 +10,12 @@ Config file: `~/.config/noctalia/tools/orbit-translate__custom__.toml`. The easi
 
 ## Settings UI
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/tui-main.png" alt="Channel settings TUI" width="62%" />
+&nbsp;
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/tui-add.png" alt="AI protocol picker" width="34%" />
+</p>
+
 | Key | Action |
 | --- | --- |
 | `↑ ↓` / `j k` | Select a channel |
