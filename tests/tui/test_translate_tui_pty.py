@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from tests.shell.test_shell_runtime import presentation_budget
-from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.utils import presentation_budget
+from tests.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import fcntl
 import os
@@ -195,13 +195,13 @@ class TestTranslatePtyTimeoutScaling(unittest.TestCase):
         import importlib
         import inspect
 
-        from tests.tools.translate.tui import test_translate_tui_pty as module
+        from tests.tui import test_translate_tui_pty as module
 
         with patch.dict(os.environ, {}, clear=False):
-            for key in ("NYXURI_PRESENTATION_TIMEOUT_SCALE",):
+            for key in ("ORBIT_PRESENTATION_TIMEOUT_SCALE",):
                 os.environ.pop(key, None)
             if scale is not None:
-                os.environ["NYXURI_PRESENTATION_TIMEOUT_SCALE"] = scale
+                os.environ["ORBIT_PRESENTATION_TIMEOUT_SCALE"] = scale
             importlib.reload(module)
             return inspect.signature(getattr(module.TerminalApp, name)).parameters["timeout"].default
 

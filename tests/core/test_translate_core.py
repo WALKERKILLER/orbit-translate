@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import json
 from types import SimpleNamespace
@@ -418,7 +418,7 @@ class TestTranslateConfigErrors(unittest.TestCase):
 
     def _module(self, name):
         import importlib
-        tools = Path(__file__).resolve().parents[4] / "plugins" / "noctalia" / "tools"
+        tools = Path(__file__).resolve().parents[2]
         if str(tools) not in sys.path:
             sys.path.insert(0, str(tools))
         return importlib.import_module(f"orbit_translate.{name}")

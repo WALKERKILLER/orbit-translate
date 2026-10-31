@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import os
 from pathlib import Path
@@ -10,7 +10,7 @@ import tempfile
 import tomllib
 import unittest
 
-from tests.tools.translate.tui.test_translate_tui_pty import TerminalApp, _FIXTURE
+from tests.tui.test_translate_tui_pty import TerminalApp, _FIXTURE
 
 
 @unittest.skipUnless(os.name == "posix" and Path("/usr/bin/python3").exists(), "requires POSIX ncurses")

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import os
 from pathlib import Path
@@ -11,7 +11,7 @@ import time
 import tomllib
 import unittest
 
-from tests.tools.translate.tui.test_translate_tui_pty import TerminalApp, _ENTRY, _FIXTURE
+from tests.tui.test_translate_tui_pty import TerminalApp, _ENTRY, _FIXTURE
 
 
 def _command(config: Path, *, cold: bool = False) -> list[str]:

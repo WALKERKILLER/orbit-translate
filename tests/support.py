@@ -1,10 +1,10 @@
-"""Shared harness for the Orbit Translate tool tests.
+"""Shared harness for the Orbit Translate tests.
 
-The tool ships as deployed files under plugins/noctalia/tools (entry
-orbit-translate.py + package orbit_translate/), not as a nyxuri subpackage, so
-its directory goes on sys.path like test_wallpaper_scanner does. Test modules
-re-export setUpModule/tearDownModule from here: each module runs inside one
-TempEnv, so XDG config/cache lookups never reach the real ~/.config or ~/.cache.
+The tool ships as plain files (entry orbit-translate.py + package
+orbit_translate/), not as an installed distribution, so the repository root
+goes on sys.path. Test modules re-export setUpModule/tearDownModule from here:
+each module runs inside one TempEnv, so XDG config/cache lookups never reach
+the real ~/.config or ~/.cache.
 """
 
 import sys
@@ -12,11 +12,12 @@ from pathlib import Path
 
 from tests.utils import TempEnv
 
-TOOLS = Path(__file__).resolve().parents[3] / "plugins" / "noctalia" / "tools"
-ENTRY = TOOLS / "orbit-translate.py"
-if str(TOOLS) not in sys.path:
-    sys.path.insert(0, str(TOOLS))
-# Blueprint modules imported from units/ must never drop __pycache__ into the read-only source tree (unit-model §1).
+ROOT = Path(__file__).resolve().parents[1]
+ENTRY = ROOT / "orbit-translate.py"
+TEMPLATE = ROOT / "config" / "orbit-translate__custom__.toml"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+# Tests import the source tree directly; keep it free of __pycache__ residue.
 sys.dont_write_bytecode = True
 
 _env = None

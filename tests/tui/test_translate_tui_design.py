@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import curses
 import os
@@ -20,7 +20,7 @@ from orbit_translate.tui import (
     display_width,
 )
 from orbit_translate.tui_style import load_terminal_style
-from tests.tools.translate.tui.test_translate_tui import FakeDocument
+from tests.tui.test_translate_tui import FakeDocument
 
 
 class RecordingScreen:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tests.tools.translate.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
+from tests.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
 import os
 import time
