@@ -23,6 +23,7 @@ Orbit Translate 是 Nyxuri 外迁出来的小工具：一次快捷键、一个�
 | 设置 TUI / 浮窗 (`tui*.py`, `ui.py`, `widgets.py`, `geometry.py`, `theme.py`, `presentation.py`) | `orbit-translate.md` | `/usr/bin/python3 -m unittest discover -s tests/tui -t .` |
 | 部署路径 / 配置模板 / 安装器 (`install.sh`, `config/`) | `nyxuri-integration.md` | `python3 -m unittest tests.test_install tests.core.test_translate_integration` + `shellcheck install.sh` |
 | 文档 (`*.md`, `llms-wiki/`, `humans-wiki/`) | `llms.txt` | `python3 -m unittest tests.test_docs` |
+| 效果图 (`assets/screenshots/`) | `assets/screenshots/README.md` | 浮窗外观变动后 `python3 scripts/render_screenshots.py` 重渲 |
 | CI / 仓库规则 (`.github/`) | 本页第 4 节 | 推送后看 Actions |
 | 版本发布 (`CHANGELOG.md`) | Keep a Changelog | `git log <last-tag>..HEAD` 对齐净变更 |
 

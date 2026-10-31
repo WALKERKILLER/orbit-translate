@@ -10,6 +10,12 @@
 
 ## 设置界面
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/tui-main.png" alt="渠道设置 TUI" width="62%" />
+&nbsp;
+<img src="https://raw.githubusercontent.com/WALKERKILLER/orbit-translate/main/assets/screenshots/tui-add.png" alt="AI 协议选择" width="34%" />
+</p>
+
 | 按键 | 用途 |
 | --- | --- |
 | `↑ ↓` / `j k` | 选择渠道 |

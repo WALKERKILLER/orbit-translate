@@ -22,6 +22,15 @@
 </p>
 
 <p>
+<img src="assets/screenshots/popup-sentence.png" alt="多渠道并行译文" width="31%" />
+&nbsp;
+<img src="assets/screenshots/popup-language-menu.png" alt="目标语言菜单" width="31%" />
+&nbsp;
+<img src="assets/screenshots/popup-dictionary.png" alt="单词查询：译文 + 词典卡片" width="31%" />
+</p>
+<p><sub>多渠道并行译文 · 目标语言菜单向下展开 · 单词查询：译文 + 词典卡片</sub></p>
+
+<p>
 <sub><em>来自 <a href="https://github.com/ech678/Nyxuri">Nyxuri</a> · 阅读 <a href="https://github.com/WALKERKILLER/orbit-translate/wiki/Home-zh">Wiki</a></em></sub>
 </p>
 <br />
@@ -82,6 +91,8 @@ orbit-translate
 ├── orbit_translate/            # 程序本体（纯标准库 + GTK3）
 ├── config/                     # 用户配置模板（免费预设）
 ├── install.sh                  # 独立安装 / 卸载
+├── scripts/                    # 开发脚本（效果图渲染）
+├── assets/screenshots/         # README 与 Wiki 效果图
 ├── tests/                      # 契约测试（core / catalog / tui）
 ├── llms-wiki/                  # 架构契约与设计决策
 └── humans-wiki/                # 用户手册（同步到 GitHub Wiki）
@@ -92,6 +103,21 @@ orbit-translate
 ```bash
 ~/.config/noctalia/tools/orbit-translate.py --settings
 ```
+
+<table>
+  <tr>
+    <th width="60%">渠道设置 TUI</th>
+    <th width="40%">新增 AI 渠道：协议选择</th>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/tui-main.png" alt="渠道设置 TUI" /></td>
+    <td><img src="assets/screenshots/tui-add.png" alt="AI 协议选择" /></td>
+  </tr>
+  <tr>
+    <td><sub>左列渠道、右列详情：<code>❯</code> 指针、<code>[✓]</code> 启停、底部 <code>[键] 操作</code> 提示，未保存状态显示在标题栏。</sub></td>
+    <td><sub>OpenAI Chat / Responses、Anthropic、Gemini、Ollama 各自适配；按 <code>m</code> 从 models.dev 预填。</sub></td>
+  </tr>
+</table>
 
 渠道开关、AI 协议、API Key 和 models.dev 快捷配置都在这里。字段说明见 [配置手册 (Wiki)](https://github.com/WALKERKILLER/orbit-translate/wiki/Configuration-zh)。
 
