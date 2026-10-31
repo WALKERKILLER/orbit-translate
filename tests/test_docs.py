@@ -1,4 +1,4 @@
-"""Docs gate: llms.txt index closure and resolvable relative links."""
+"""Docs gate: llms.txt index closure and resolvable relative links and images."""
 
 from __future__ import annotations
 
@@ -9,12 +9,13 @@ import unittest
 from tests.support import ROOT
 
 _WIKI = ROOT / "llms-wiki"
-_LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+_LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)|\bsrc=\"([^\"]+)\"")
 _DOCS = ("README.md", "README.zh-CN.md", "AGENTS.md", "CHANGELOG.md")
 
 
 def _local_targets(path: Path):
-    for target in _LINK.findall(path.read_text(encoding="utf-8")):
+    for match in _LINK.finditer(path.read_text(encoding="utf-8")):
+        target = match.group(1) or match.group(2)
         if re.match(r"^[a-z]+:", target) or target.startswith("#"):
             continue
         yield target.split("#", 1)[0]
