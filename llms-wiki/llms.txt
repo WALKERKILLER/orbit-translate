@@ -1,0 +1,13 @@
+# Orbit Translate
+
+> Orbit Translate 是面向 Niri / Wayland 的一次性划词翻译浮窗与终端渠道设置。
+> 纯 Python 标准库 + 系统 GTK3 / GtkLayerShell（零 pip 依赖，需 3.11+ 因 tomllib）。
+
+这份 wiki 记录架构契约、设计决策与原因意图：每页一主题、自包含、按需取。
+- **真值分工 (Source of Truth)**：运行时行为与实现细节以源码（`orbit_translate/` + `orbit-translate.py`）与契约测试（`tests/`）为准。
+- 根目录 [../AGENTS.md](../AGENTS.md) 仅保留不变量、改动路由与验证命令。
+
+## Contracts
+
+- [orbit-translate](orbit-translate.md): 运行时契约（一次性进程、指针下方定位、M3 色调面板、渠道协议、设置 TUI 与凭据边界）
+- [nyxuri-integration](nyxuri-integration.md): 与 Nyxuri 的上游/消费方边界（部署路径、快捷键与菜单入口、包声明、不变量）

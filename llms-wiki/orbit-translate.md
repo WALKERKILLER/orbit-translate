@@ -1,8 +1,9 @@
 # Orbit Translate — 划词翻译浮窗与渠道设置
 
+> 本页是 Orbit Translate 的运行时契约，以源码与 `tests/` 为准。
 > 一次性（one-shot）划词翻译工具：读取 Wayland PRIMARY 选区，在指针下方弹出 Material 3 色调浮窗，
-> 并行展示多个翻译渠道的结果。入口：`units/noctalia/tools/orbit-translate.py`；实现：
-> `units/noctalia/tools/orbit_translate/`（`ui.py` 浮窗、`widgets.py` 自适应滚动与语言菜单、
+> 并行展示多个翻译渠道的结果。入口：`orbit-translate.py`；实现：
+> `orbit_translate/`（`ui.py` 浮窗、`widgets.py` 自适应滚动与语言菜单、
 > `geometry.py` 定位、`engine.py` 并发调度、`providers.py` 渠道协议、`tui.py` 设置界面、`theme.py` 调色）。
 > 调色与 Orbit 启动器共用 `~/.cache/nyxuri/palette.toml`。
 
@@ -10,14 +11,11 @@
 
 | 触发 | 链路 | 结果 |
 |---|---|---|
-| `Alt + E` | `binds.kdl` → `shell-action.sh translate` → `orbit-translate.py` | 捕获选区并弹出翻译浮窗 |
-| Orbit › System Tools › Translate（`4`） | `cmd = "translate"` → `niri-scratch-toggle.sh` → `kitty --app-id scratchpad --title Translate -e orbit-translate.py --settings` | 在浮动 Scratchpad Kitty 中打开渠道设置 TUI |
-| 终端 | `orbit-translate.py --settings [--config PATH]` | 同上，`--config` 只用于检查独立文件 |
+| `orbit-translate.py`（快捷键，如 Niri `Alt + E`） | 直接 `spawn` 入口 | 捕获选区并弹出翻译浮窗 |
+| 终端 | `orbit-translate.py --settings [--config PATH]` | 打开渠道设置 TUI；`--config` 只用于检查独立文件 |
 | 终端 | `orbit-translate.py --check-deps` | 不开窗口，只检查 `wl-paste` / `niri` / GTK3 / GtkLayerShell |
 
-`cmd = "translate"` 是数据而非 shell 命令（与 `clean` 相同的别名约定，见
-[orbit-launcher](orbit-launcher.md)）；`shell-action.sh` 在自研 Shell 模式下照常把 `translate`
-转交 `--action`，与 `wallpaper-picker` 一致。
+Nyxuri 里的 `Alt+E` 网关与星环菜单入口属于消费方契约，见 [nyxuri-integration](nyxuri-integration.md)。
 
 ## 生命周期（零常驻）
 
@@ -57,9 +55,9 @@ TUI 使用同一加载器，终端保留默认（透明）背景，`NO_COLOR=1` 
 
 ## 配置
 
-- 路径：`${XDG_CONFIG_HOME:-~/.config}/noctalia/tools/orbit-translate__custom__.toml`。
-- 仓库附带同名模板（免费预设：仅启用 MyMemory，`en → zh-CN`）。Dunder 规则：首次部署后冻结，
-  后续 update / preset 切换保留用户版本（见 [file-preservation](../file-preservation.md)）。
+- 路径：`~/.config/noctalia/tools/orbit-translate__custom__.toml`（固定在 `$HOME` 下，与 Nyxuri 部署位置一致；不跟随 `XDG_CONFIG_HOME`）。
+- 仓库附带同名模板 `config/orbit-translate__custom__.toml`（免费预设：仅启用 MyMemory，`en → zh-CN`）。
+  `install.sh` 只在目标缺失时复制；Nyxuri 部署同样遵守 Dunder 规则，首次部署后冻结、更新时保留用户版本。
 - 根级键：`source` / `target` / `capture_timeout_ms` / `request_timeout_ms` / `max_chars` /
   `max_parallel` / `dismiss_after_ms` / `capture_primary` / `max_cards` / `show_source` / `auto_copy`；
   渠道为 `[[providers]]` 数组（`id` / `name` / `type` / `enabled` + 类型专属字段）。
@@ -81,7 +79,7 @@ Key 经 stdin 传递，不进 argv 或日志；钱包不可用时安全失败，
 
 ## 设置 TUI
 
-标准库 `curses`，沿用 [tui-switcher](../archive/tui-switcher.md) 的视觉语言（`❯` 指针、`[✓]`/`[ ]` 启停、
+标准库 `curses`，沿用 Nyxuri TUI 切换器的视觉语言（`❯` 指针、`[✓]`/`[ ]` 启停、
 `── 标题 ──` 分区、`[键] 操作` 提示、圆角对话框）。`空格`开关、`a` 添加 AI 渠道、`m` 从 models.dev
 搜索提供商与模型、`e` 编辑、`K` 存 Key、`t` 示例测试、`d` 删除、`s` 显式保存、`?` 帮助。
 保存前与运行时同一套校验，创建 `0600` 备份后原子替换；外部修改冲突时拒绝覆盖。
@@ -96,15 +94,14 @@ Key 经 stdin 传递，不进 argv 或日志；钱包不可用时安全失败，
 
 ## 依赖
 
-`units/noctalia/manifest.toml` 声明 `python-gobject`、`gtk-layer-shell`、`wl-clipboard`（`wl-paste`），
-PKGBUILD 由 `gen-deps.py --update` 汇聚（见 [packaging](../archive/packaging.md)）。`kwallet-query` /
-`secret-tool` / Ollama 为可选。
+运行时：`python-gobject`、`gtk3`、`gtk-layer-shell`、`wl-clipboard`（`wl-paste`）与 Python 3.11+（`tomllib`）。
+`kwallet-query` / `secret-tool` / Ollama 为可选。`--check-deps` 额外检查 `niri`。Nyxuri 的包声明见
+[nyxuri-integration](nyxuri-integration.md)。
 
 ## 测试
 
-`tests/tools/translate/`（194 项）经 `tests/tools/translate/support.py` 把 `units/noctalia/tools`
-放入 `sys.path`，并让每个模块运行在 `TempEnv` 内。涵盖配置校验、渠道协议与解析、定位几何、
-ResultRelay、凭据脱敏、models.dev 目录、TUI（含 PTY 实测）与浮窗交互。真实 GTK surface 测试需
-显式开启：`ORBIT_GTK_ACCEPTANCE=1 python3 -m unittest tests.test_translate_popup_native`。
-`Alt+E` 绑定、Orbit 菜单项、`shell-action.sh translate` 与 `niri-scratch-toggle.sh translate`
-的契约分别在 `test_translate_integration.py` 与 `test_config_scripts.py` 中固定。
+`tests/` 按域分为 `core/`（配置、渠道协议、凭据、调色与模板契约）、`catalog/`（models.dev 目录）与
+`tui/`（设置 TUI、PTY 实测、浮窗交互），另有 `test_install.py`（安装器）与 `test_docs.py`（文档门禁）。
+`tests/support.py` 把仓库根放入 `sys.path`，并让每个模块运行在 `tests/utils.py:TempEnv` 内，不触碰真实
+`~/.config` / `~/.cache`。PTY 测试使用 `/usr/bin/python3`；浮窗交互测试在 GTK3 不可用时跳过。
+真实 GTK surface 测试需显式开启：`ORBIT_GTK_ACCEPTANCE=1 python3 -m unittest tests.tui.test_translate_popup_native`。
