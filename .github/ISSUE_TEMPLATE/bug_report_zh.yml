@@ -1,0 +1,41 @@
+name: 错误报告 (中文)
+description: 报告 Orbit Translate 的浮窗、渠道或设置界面异常
+title: "[Bug] "
+labels: ["bug"]
+assignees: ["WALKERKILLER"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提交前，建议先运行 `~/.config/noctalia/tools/orbit-translate.py --check-deps`。
+        请勿粘贴 API Key 或钥匙串内容。
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 直陈事实。描述发生了什么。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 触发该问题的具体步骤（在哪个应用里选中、启用了哪些渠道）。
+      placeholder: |
+        1. 在 ... 中选中文本
+        2. 按下 Alt+E
+        3. 预期 ... 实际 ...
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostic
+    attributes:
+      label: 环境信息
+      description: "`--check-deps` 输出、发行版、合成器版本、安装方式（Nyxuri / 独立安装）。"
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: 补充信息
+      description: 截图、录屏或其他相关背景。

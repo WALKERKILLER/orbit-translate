@@ -1,0 +1,41 @@
+name: Bug Report (English)
+description: Report a problem with the Orbit Translate panel, channels or settings UI
+title: "[Bug] "
+labels: ["bug"]
+assignees: ["WALKERKILLER"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, it's recommended to run `~/.config/noctalia/tools/orbit-translate.py --check-deps`.
+        Never paste API keys or keyring contents.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Describe what happened objectively and clearly.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps (which app you selected text in, which channels are enabled).
+      placeholder: |
+        1. Select text in ...
+        2. Press Alt+E
+        3. Expected ... Actual ...
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostic
+    attributes:
+      label: Environment
+      description: "`--check-deps` output, distro, compositor version, install method (Nyxuri / standalone)."
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Screenshots, recordings, or other relevant information.

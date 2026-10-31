@@ -1,0 +1,24 @@
+name: Feature Request (English)
+description: Suggest a new feature or enhancement
+title: "[Feature] "
+labels: ["enhancement"]
+assignees: ["WALKERKILLER"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, consider whether the suggestion fits Orbit Translate's principles: nothing resident, no dependency bloat, gone when you're done.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Background
+      description: What specific pain point or gap does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe how you expect it to work or look.
+    validations:
+      required: true

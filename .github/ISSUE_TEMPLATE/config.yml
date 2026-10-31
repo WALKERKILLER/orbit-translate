@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🖥️ Nyxuri 桌面问题 (Nyxuri Desktop Issues)
+    url: https://github.com/ech678/Nyxuri/issues
+    about: 快捷键网关、星环菜单与部署相关的问题请到 Nyxuri 反馈。 / Shortcut gateway, Orbit menu and deployment issues belong to Nyxuri.
