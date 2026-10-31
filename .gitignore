@@ -1,0 +1,12 @@
+# Orbit Translate Git Ignore Rules
+
+# Agent instructions & development notes
+notes/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+
+# Temp & backup files
+*.tmp
+*.bak
