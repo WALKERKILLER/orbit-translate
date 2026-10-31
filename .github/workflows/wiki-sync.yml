@@ -24,6 +24,7 @@ jobs:
       - name: Sync Wiki
         env:
           WIKI_REPO: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -39,7 +40,10 @@ jobs:
               git commit -m "docs(wiki): sync from humans-wiki (${{ github.sha }})"
               git push origin master || git push origin main
             fi
+          elif [ "$(gh api "repos/${{ github.repository }}" --jq .has_wiki)" = "true" ]; then
+            # GitHub only creates the wiki repo after its first page is saved in the web UI.
+            echo "::warning title=Wiki not initialized::Create any page at ${{ github.server_url }}/${{ github.repository }}/wiki once, then re-run this workflow."
           else
-            echo "Wiki repository not initialized yet or not accessible. Please ensure Wiki is enabled in repository settings."
+            echo "Wiki repository not accessible. Please ensure Wiki is enabled in repository settings."
             exit 1
           fi
