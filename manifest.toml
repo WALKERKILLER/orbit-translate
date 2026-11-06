@@ -1,0 +1,7 @@
+schemaVersion = 1
+id = "orbit-translate"
+kinds = ["config"]
+label = "Orbit Translate"
+category = "tools"
+packages = ["python-gobject", "gtk3", "gtk-layer-shell", "wl-clipboard"]
+chmod = ["orbit-translate.py"]
