@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Capture the current Wayland selection and show the Orbit translation panel."""
+"""Capture the current Wayland selection (or clipboard) and show the Orbit translation panel."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import argparse
 import shutil
 import sys
 
-from orbit_translate.capture import CaptureError, capture_primary
+from orbit_translate.capture import CaptureError, capture_clipboard, capture_primary
 from orbit_translate.config import ConfigError, default_config, load_config
 
 
@@ -49,6 +49,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="open the terminal channel settings before capture or GTK starts",
     )
     modes.add_argument(
+        "--clipboard",
+        action="store_true",
+        help="translate the regular clipboard instead of the PRIMARY selection",
+    )
+    modes.add_argument(
         "--check-deps",
         action="store_true",
         help="check runtime dependencies without opening a window",
@@ -86,14 +91,16 @@ def main(argv: list[str] | None = None) -> int:
         show_message(default_config(), f"配置错误\n{exc}")
         return 1
 
-    if not config.capture_primary:
+    # --clipboard is an explicit request, so capture_primary = false does not block it.
+    if not args.clipboard and not config.capture_primary:
         from orbit_translate.ui import show_message
 
         show_message(config, "已关闭 Primary Selection 捕获")
         return 1
 
+    capture = capture_clipboard if args.clipboard else capture_primary
     try:
-        selected_text = capture_primary(
+        selected_text = capture(
             timeout_ms=config.capture_timeout_ms,
             max_chars=config.max_chars,
         )
