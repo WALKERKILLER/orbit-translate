@@ -80,8 +80,13 @@ binds {
     Alt+E repeat=false hotkey-overlay-title="Translate selection" {
         spawn "~/.config/noctalia/tools/orbit-translate.py"
     }
+    Alt+Shift+E repeat=false hotkey-overlay-title="Translate clipboard" {
+        spawn "~/.config/noctalia/tools/orbit-translate.py" "--clipboard"
+    }
 }
 ```
+
+`Alt+Shift+E` is optional: it translates the regular clipboard, for apps that never fill the PRIMARY selection (some PDF viewers) — select, `Ctrl+C`, then press it.
 
 ## Directory Structure
 

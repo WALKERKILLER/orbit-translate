@@ -39,7 +39,7 @@ Saving runs the same validation as the panel, writes a `0600` backup, then repla
 | --- | --- | --- |
 | `source` | `"auto"` | Source language code (MyMemory needs an explicit code) |
 | `target` | `"zh-CN"` | Target language code |
-| `capture_primary` | `true` | Read the Wayland PRIMARY selection |
+| `capture_primary` | `true` | Read the Wayland PRIMARY selection (`--clipboard` is unaffected) |
 | `capture_timeout_ms` | `350` | 100 – 5000 |
 | `request_timeout_ms` | `6000` | 500 – 120000, per channel |
 | `max_chars` | `8000` | 1 – 50000, longer selections are cut |

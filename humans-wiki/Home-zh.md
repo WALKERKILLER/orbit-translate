@@ -35,8 +35,13 @@ sudo pacman -S --needed python-gobject gtk3 gtk-layer-shell wl-clipboard
       Alt+E repeat=false hotkey-overlay-title="Translate selection" {
           spawn "~/.config/noctalia/tools/orbit-translate.py"
       }
+      Alt+Shift+E repeat=false hotkey-overlay-title="Translate clipboard" {
+          spawn "~/.config/noctalia/tools/orbit-translate.py" "--clipboard"
+      }
   }
   ```
+
+  `Alt+Shift+E`（可选）翻译普通剪贴板，什么时候需要见 [故障排除](Troubleshooting-zh)。Nyxuri 用户可以加到 `~/.config/niri/__custom__.kdl`。
 
 ## 文件位置
 

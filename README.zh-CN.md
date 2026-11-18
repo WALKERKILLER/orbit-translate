@@ -80,8 +80,13 @@ binds {
     Alt+E repeat=false hotkey-overlay-title="Translate selection" {
         spawn "~/.config/noctalia/tools/orbit-translate.py"
     }
+    Alt+Shift+E repeat=false hotkey-overlay-title="Translate clipboard" {
+        spawn "~/.config/noctalia/tools/orbit-translate.py" "--clipboard"
+    }
 }
 ```
+
+`Alt+Shift+E` 可选：翻译普通剪贴板，给不写 PRIMARY 选区的应用用（部分 PDF 阅读器）——选中、`Ctrl+C`、再按它。
 
 ## 目录结构
 

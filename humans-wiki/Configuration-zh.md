@@ -39,7 +39,7 @@
 | --- | --- | --- |
 | `source` | `"auto"` | 源语言码（MyMemory 需要明确语言码） |
 | `target` | `"zh-CN"` | 目标语言码 |
-| `capture_primary` | `true` | 读取 Wayland PRIMARY 选区 |
+| `capture_primary` | `true` | 读取 Wayland PRIMARY 选区（不影响 `--clipboard`） |
 | `capture_timeout_ms` | `350` | 100 – 5000 |
 | `request_timeout_ms` | `6000` | 500 – 120000，单渠道 |
 | `max_chars` | `8000` | 1 – 50000，超出截断 |
