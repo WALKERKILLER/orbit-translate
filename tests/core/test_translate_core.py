@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from tests.support import ENTRY, setUpModule, tearDownModule  # noqa: F401
 
+from io import BytesIO
 import json
 from types import SimpleNamespace
 import unittest
@@ -43,7 +44,8 @@ from orbit_translate.providers import (
     extract_tatoeba_text,
     extract_transmart_translation,
     extract_yandex_translation,
-    deepl_language_code,
+    deepl_source_code,
+    deepl_target_code,
     libre_language_code,
     mymemory_language_code,
     ProviderError,
@@ -266,10 +268,66 @@ class ProviderTests(unittest.TestCase):
         self.assertIn("名词：问候", result)
 
     def test_deepl_payload_and_response(self) -> None:
-        body = build_deepl_body("hello", "en-US", "zh-CN", request_id=123, timestamp=456)
-        self.assertEqual(body["params"]["lang"], {"source_lang_user_selected": "EN", "target_lang": "ZH"})
-        self.assertEqual(extract_deepl_translation({"result": {"texts": [{"text": "你好"}]}}), "你好")
-        self.assertEqual(deepl_language_code("auto"), "auto")
+        self.assertEqual(build_deepl_body("hello", "en-US", "zh-CN"),
+                         {"text": ["hello"], "target_lang": "zh-Hans", "source_lang": "en"})
+        self.assertEqual(build_deepl_body("hello", "auto", "ja"), {"text": ["hello"], "target_lang": "ja"})
+        payload = {"translations": [{"detected_source_language": "en", "text": "你好"}]}
+        self.assertEqual(extract_deepl_translation(payload, "hello", "zh-CN"), "你好")
+
+    def test_deepl_target_codes_are_exact_oneshot_forms(self) -> None:
+        # Near misses are answered 200 with the input unchanged, so they must never be sent.
+        cases = {
+            "zh-CN": "zh-Hans", "zh": "zh-Hans", "zh-TW": "zh-Hant", "zh-HK": "zh-Hant", "zh-Hant": "zh-Hant",
+            "en": "en-US", "en-GB": "en-GB", "pt": "pt-BR", "pt-PT": "pt-PT", "ja": "ja", "DE": "de",
+        }
+        for language, code in cases.items():
+            with self.subTest(language=language):
+                self.assertEqual(deepl_target_code(language), code)
+        self.assertEqual(deepl_source_code("auto"), "")
+        self.assertEqual(deepl_source_code("zh-TW"), "zh")
+        self.assertEqual(deepl_source_code("EN-US"), "en")
+
+    def test_deepl_request_shape(self) -> None:
+        provider = parse_config({"providers": [{"id": "deepl", "type": "deepl"}]}).providers[0]
+        response = BytesIO(json.dumps({"translations": [{"detected_source_language": "en", "text": "你好，世界"}]}).encode())
+        with patch("orbit_translate.providers.urllib.request.urlopen", return_value=response) as urlopen:
+            outcome = translate_provider(provider, "Hello world", "en", "zh-CN", 5000)
+        self.assertEqual((outcome.ok, outcome.text), (True, "你好，世界"))
+        request = urlopen.call_args.args[0]
+        self.assertEqual(request.full_url, "https://oneshot-free.www.deepl.com/v1/translate")
+        self.assertEqual(request.get_method(), "POST")
+        self.assertEqual(request.get_header("Authorization"), "None")
+        self.assertEqual(request.get_header("Content-type"), "application/json")
+        self.assertEqual(json.loads(request.data), {"text": ["Hello world"], "target_lang": "zh-Hans", "source_lang": "en"})
+
+    def test_deepl_outdated_notice_is_a_failure_not_a_card(self) -> None:
+        # Exact shape the retired www2.deepl.com/jsonrpc path started returning in 2026-11.
+        notice = ("You're using an older version of DeepL. To continue using the app, please update to the latest version.\n\n"
+                  "Sie verwenden eine ältere Version von DeepL. Bitte aktualisieren Sie die App, um sie weiterhin nutzen zu können.")
+        with self.assertRaises(ProviderError) as raised:
+            extract_deepl_translation({"translations": [{"text": notice}]}, "Hello world", "zh-CN")
+        self.assertEqual(raised.exception.category, "remote")
+
+    def test_deepl_echo_of_unsupported_target_is_a_failure(self) -> None:
+        echo = {"translations": [{"detected_source_language": "en", "text": "Good morning, friend."}]}
+        with self.assertRaises(ProviderError) as raised:
+            extract_deepl_translation(echo, "Good  morning, friend.", "th")
+        self.assertEqual(raised.exception.category, "empty")
+        with self.assertRaises(ProviderError):
+            extract_deepl_translation({"translations": [{"text": "OK"}]}, "OK", "zh-CN")
+        # Input already in the target language legitimately comes back unchanged.
+        same = {"translations": [{"detected_source_language": "en", "text": "OK"}]}
+        self.assertEqual(extract_deepl_translation(same, "OK", "en"), "OK")
+
+    def test_deepl_free_length_cap_skips_the_request(self) -> None:
+        provider = parse_config({"providers": [{"id": "deepl", "type": "deepl"}]}).providers[0]
+        with patch("orbit_translate.providers.urllib.request.urlopen") as urlopen:
+            # 750 astral characters are 1500 UTF-16 units: allowed. One more BMP character is not.
+            urlopen.return_value = BytesIO(b'{"translations":[{"text":"ok"}]}')
+            self.assertTrue(translate_provider(provider, "😀" * 750, "en", "ja", 5000).ok)
+            outcome = translate_provider(provider, "😀" * 750 + "a", "en", "ja", 5000)
+        self.assertEqual(outcome.error_category, "configuration")
+        self.assertEqual(urlopen.call_count, 1)
 
     def test_bing_url_and_response(self) -> None:
         url = build_bing_url("hello", "en-US", "zh-CN", "https://example.test/translate")
