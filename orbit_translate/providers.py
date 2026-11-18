@@ -14,7 +14,6 @@ import re
 import ssl
 import subprocess
 import threading
-import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -28,7 +27,13 @@ MAX_RESPONSE_BYTES = 2_000_000
 MAX_RESULT_CHARS = 12_000
 GOOGLE_DEFAULT_URL = "https://translate.googleapis.com/translate_a/single"
 MYMEMORY_DEFAULT_URL = "https://api.mymemory.translated.net/get"
-DEEPL_DEFAULT_URL = "https://www2.deepl.com/jsonrpc"
+# Stateless endpoint behind DeepL's own Chrome extension and iOS app. The old
+# www2.deepl.com/jsonrpc (LMT_handle_texts) answers 200 with an "update the app"
+# notice as its "translation" since 2026-11.
+DEEPL_DEFAULT_URL = "https://oneshot-free.www.deepl.com/v1/translate"
+# Anonymous oneshot requests reject more than 1500 UTF-16 code units with 400.
+DEEPL_FREE_MAX_UNITS = 1500
+DEEPL_OUTDATED_NOTICE = "older version of deepl"
 BING_AUTH_URL = "https://edge.microsoft.com/translate/auth"
 BING_TRANSLATE_URL = "https://api-edge.cognitive.microsofttranslator.com/translate"
 BING_DICT_URL = "https://www.bing.com/api/v6/dictionarywords/search"
@@ -470,65 +475,80 @@ def substitute_command(command: tuple[str, ...], text: str, source: str, target:
 
 
 def _translate_deepl(provider: ProviderConfig, text: str, source: str, target: str, timeout_ms: int) -> str:
-    request_id = _deepl_request_id()
-    body = json.dumps(
-        build_deepl_body(text, source, target, request_id=request_id),
-        ensure_ascii=False,
-        separators=(",", ":"),
-    )
-    if (request_id // 1000 + 5) % 29 == 0 or (request_id // 1000 + 3) % 13 == 0:
-        body = body.replace('"method":"', '"method" : "')
-    else:
-        body = body.replace('"method":"', '"method": "')
+    if len(text.encode("utf-16-le")) // 2 > DEEPL_FREE_MAX_UNITS:
+        raise ProviderError("configuration", "DeepL 免费接口单次最多 1500 字符")
     request = urllib.request.Request(
         provider.base_url or DEEPL_DEFAULT_URL,
-        data=body.encode("utf-8"),
-        headers={"Accept": "application/json", "Content-Type": "application/json", "User-Agent": "orbit-translate/0.1"},
+        data=json.dumps(build_deepl_body(text, source, target), ensure_ascii=False).encode("utf-8"),
+        # Literal "None" is how DeepL's own clients mark anonymous free requests.
+        headers={
+            "Accept": "application/json",
+            "Authorization": "None",
+            "Content-Type": "application/json",
+            "User-Agent": "orbit-translate/0.1",
+        },
         method="POST",
     )
-    return extract_deepl_translation(_read_json(request, timeout_ms))
+    return extract_deepl_translation(_read_json(request, timeout_ms), text, target)
 
 
-def build_deepl_body(
-    text: str,
-    source: str,
-    target: str,
-    *,
-    request_id: int = 100000000,
-    timestamp: int | None = None,
-) -> dict[str, object]:
-    return {
-        "jsonrpc": "2.0",
-        "method": "LMT_handle_texts",
-        "params": {
-            "splitting": "newlines",
-            "lang": {
-                "source_lang_user_selected": deepl_language_code(source),
-                "target_lang": deepl_language_code(target),
-            },
-            "texts": [{"text": text, "requestAlternatives": 3}],
-            "timestamp": timestamp if timestamp is not None else _deepl_timestamp(text),
-        },
-        "id": request_id,
-    }
+def build_deepl_body(text: str, source: str, target: str) -> dict[str, object]:
+    body: dict[str, object] = {"text": [text], "target_lang": deepl_target_code(target)}
+    source_code = deepl_source_code(source)
+    if source_code:
+        body["source_lang"] = source_code
+    return body
 
 
-def deepl_language_code(language: str) -> str:
-    if language.strip().lower() == "auto":
-        return "auto"
-    return language.split("-", 1)[0].upper()
+def deepl_source_code(language: str) -> str:
+    """Generic source code; empty means server-side detection."""
+    primary = language.strip().split("-", 1)[0].lower()
+    return "" if primary == "auto" else primary
 
 
-def extract_deepl_translation(payload: object) -> str:
+def deepl_target_code(language: str) -> str:
+    """Oneshot targets are case-sensitive script/region codes.
+
+    A near miss such as "zh", "ZH-HANS" or bare "pt" is not rejected: the
+    endpoint answers 200 with the input unchanged, so map them explicitly.
+    """
+    lowered = language.strip().lower()
+    if lowered in {"zh-tw", "zh-hk", "zh-mo", "zh-hant"}:
+        return "zh-Hant"
+    regional = {"en-gb": "en-GB", "pt-pt": "pt-PT", "es-419": "es-419", "fr-ca": "fr-CA", "de-ch": "de-CH"}
+    if lowered in regional:
+        return regional[lowered]
+    primary = lowered.split("-", 1)[0]
+    return {"zh": "zh-Hans", "en": "en-US", "pt": "pt-BR"}.get(primary, primary)
+
+
+def extract_deepl_translation(payload: object, text: str = "", target: str = "") -> str:
     if not isinstance(payload, dict):
         raise ProviderError("parse", "DeepL 响应格式无效")
-    result = payload.get("result")
-    texts = result.get("texts") if isinstance(result, dict) else None
-    first = texts[0] if isinstance(texts, list) and texts else None
+    translations = payload.get("translations")
+    first = translations[0] if isinstance(translations, list) and translations else None
     value = first.get("text") if isinstance(first, dict) else None
     if not isinstance(value, str) or not value.strip():
-        raise ProviderError("remote" if payload.get("error") else "empty", "DeepL 返回了空结果")
+        raise ProviderError("remote" if payload.get("error") or payload.get("errors") else "empty", "DeepL 返回了空结果")
+    if DEEPL_OUTDATED_NOTICE in value.casefold():
+        raise ProviderError("remote", "DeepL 接口已过期")
+    if text and _deepl_echoed(value, text, first, target):
+        raise ProviderError("empty", "DeepL 未返回译文")
     return _require_result(value)
+
+
+def _deepl_echoed(result: str, text: str, translation: dict, target: str) -> bool:
+    """Unsupported targets (e.g. Thai) come back 200 with the input unchanged.
+
+    An unchanged result is only accepted when DeepL detected the input as
+    already being in the target language.
+    """
+    if " ".join(result.split()).casefold() != " ".join(text.split()).casefold():
+        return False
+    detected = translation.get("detected_source_language")
+    if not isinstance(detected, str) or not target:
+        return True
+    return deepl_source_code(detected) != deepl_source_code(target)
 
 
 def _translate_bing(provider: ProviderConfig, text: str, source: str, target: str, timeout_ms: int) -> str:
@@ -1074,19 +1094,6 @@ def _require_result(value: str) -> str:
     if len(result) > MAX_RESULT_CHARS:
         return result[:MAX_RESULT_CHARS].rstrip() + "…"
     return result
-
-
-def _deepl_request_id() -> int:
-    return (int(time.time_ns() % 99999) + 100000) * 1000
-
-
-def _deepl_timestamp(text: str) -> int:
-    timestamp = int(time.time() * 1000)
-    count = text.count("i")
-    if count:
-        count += 1
-        return timestamp - (timestamp % count) + count
-    return timestamp
 
 
 def _read_text(request: urllib.request.Request, timeout_ms: int) -> str:

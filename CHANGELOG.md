@@ -7,6 +7,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- DeepL 免费渠道显示多语言的「You're using an older version of DeepL」而不是译文：迁移到 DeepL 官方扩展同款的 oneshot 接口，目标语言码改为接口要求的精确写法；该提示、不支持语言（如泰语）的原样回显都不再显示成译文卡片（#6）
+
 ### Added
 - 从 Nyxuri 外迁为独立仓库（Nyxuri ROADMAP R0-5）：保留 `configs/` → `units/` → `plugins/noctalia/tools/` 路径上的完整提交历史与作者
 - `install.sh`：不依赖 Nyxuri 的独立安装，目标与 Nyxuri 部署位置相同（`~/.config/noctalia/tools/`）；只在缺失时复制配置模板，`--uninstall` 保留用户配置

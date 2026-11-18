@@ -67,6 +67,10 @@ TUI 使用同一加载器，终端保留默认（透明）背景，`NO_COLOR=1` 
   公共接口的请求参数与解析对齐 Pot，默认关闭，可能限流或下线。
 - 词典 / 例句类渠道（`bing_dict` `ecdict` `tatoeba`）只接受短词组（≤4 词、≤48 字符、无句内断句），
   长句直接跳过，不浪费请求。
+- DeepL 走 oneshot 接口 `oneshot-free.www.deepl.com/v1/translate`（DeepL 官方扩展与 iOS App 同款，`Authorization: None`
+  表示匿名）；旧 `www2.deepl.com/jsonrpc` 自 2026-11 起以 200 返回「请更新 App」提示，已弃用。目标语言码区分大小写：
+  `zh-Hans` / `zh-Hant` / `en-US` / `pt-BR`，近似写法（`zh`、`pt`）会被原样回显。原样回显且检测语言 ≠ 目标语言（如不支持的 `th`）
+  判为空结果；「older version」提示判为远端错误；匿名单次上限 1500 个 UTF-16 单元，超出在本地跳过。
 - Lingva 把 `zh-TW/HK/MO/Hant` 映射为 `zh_HANT`；回显原文且 `detectedSource` 不等于目标语言时判为空结果
   （部分公共实例对所有语言对回显输入）。
 
