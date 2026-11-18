@@ -17,6 +17,7 @@
 |---|---|---|
 | 部署位置 | `~/.config/noctalia/tools/` | 入口、包与 Dunder 配置同目录；`config_path()` 依赖这一位置 |
 | 选区快捷键 | `plugins/niri/binds.kdl` → `shell-action.sh translate` | `Alt+E repeat=false`，网关在自研 Shell 下转交 `--action` |
+| 剪贴板快捷键（可选） | 尚无网关动作 | `--clipboard` 是新增 CLI，Nyxuri 若要默认提供，需要新增 `translate-clipboard` 之类的网关动作；在此之前用户自行写进 `__custom__.kdl` |
 | 设置入口 | Orbit `System Tools › Translate`（`cmd = "translate"`）→ `niri-scratch-toggle.sh translate` | Scratchpad Kitty 中运行 `orbit-translate.py --settings` |
 | 包声明 | `plugins/noctalia/manifest.toml` | `python-gobject`、`gtk-layer-shell`、`wl-clipboard` |
 | 调色事实源 | `~/.cache/nyxuri/palette.toml` | 本仓库只读；缺失时回退 `nyxniri/` → `noctalia/starship-palette.toml` → 内置色 |

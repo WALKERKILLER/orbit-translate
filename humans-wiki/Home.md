@@ -35,8 +35,13 @@ sudo pacman -S --needed python-gobject gtk3 gtk-layer-shell wl-clipboard
       Alt+E repeat=false hotkey-overlay-title="Translate selection" {
           spawn "~/.config/noctalia/tools/orbit-translate.py"
       }
+      Alt+Shift+E repeat=false hotkey-overlay-title="Translate clipboard" {
+          spawn "~/.config/noctalia/tools/orbit-translate.py" "--clipboard"
+      }
   }
   ```
+
+  `Alt+Shift+E` (optional) translates the regular clipboard — see [Troubleshooting](Troubleshooting) for when you need it. Nyxuri users can add it to `~/.config/niri/__custom__.kdl`.
 
 ## Files
 

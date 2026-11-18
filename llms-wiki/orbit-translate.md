@@ -12,6 +12,7 @@
 | 触发 | 链路 | 结果 |
 |---|---|---|
 | `orbit-translate.py`（快捷键，如 Niri `Alt + E`） | 直接 `spawn` 入口 | 捕获选区并弹出翻译浮窗 |
+| `orbit-translate.py --clipboard`（可选快捷键，如 `Alt + Shift + E`） | 同上 | 改读普通剪贴板，给不写 PRIMARY 的应用（部分 PDF 阅读器） |
 | 终端 | `orbit-translate.py --settings [--config PATH]` | 打开渠道设置 TUI；`--config` 只用于检查独立文件 |
 | 终端 | `orbit-translate.py --check-deps` | 不开窗口，只检查 `wl-paste` / `niri` / GTK3 / GtkLayerShell |
 
@@ -22,6 +23,7 @@ Nyxuri 里的 `Alt+E` 网关与星环菜单入口属于消费方契约，见 [ny
 ```
 Alt+E ─► orbit-translate.py
           ├─ wl-paste --primary --no-newline（capture_timeout_ms 有界）
+          │    --clipboard：wl-paste --list-types → wl-paste --no-newline --type <纯文本类型>（两次共用一个时限）
           ├─ 读取配置 → ProviderEngine 先于 GTK import 启动（ResultRelay 缓冲早到结果）
           ├─ import GTK3 + GtkLayerShell → 全屏 OVERLAY 层 surface（键盘 EXCLUSIVE）
           ├─ 指针 enter 事件到达 → 定位面板 → ResultRelay 回放结果、增量追加卡片
@@ -32,6 +34,14 @@ Alt+E ─► orbit-translate.py
 - 渠道请求在线程池中并行（`max_parallel`，默认 8，上限 16），共享一个懒加载 TLS context。
 - 鼠标停留、选择文字、滚动、语言菜单展开或拖动期间暂停闲置倒计时。
 - 只展示成功卡片，按渠道顺序稳定排列；全部失败时显示一条“无可用译文”提示。
+
+## 捕获来源
+
+- 默认读 PRIMARY。PRIMARY 几乎不会为空：它保留最后一次在任何支持它的应用里选中的文字，所以不写 PRIMARY 的应用
+  （部分 PDF 阅读器）会让浮窗翻出**旧选区**——这就是不做「PRIMARY 为空时回退剪贴板」的原因（#1）。
+- `--clipboard` 是显式模式：用户先 `Ctrl+C` 再按专用快捷键，来源明确。`capture_primary = false` 不拦它。
+- 剪贴板内容会发往远端渠道，因此先看类型列表：带 `x-kde-passwordManagerHint`（KeePassXC、`wl-copy --sensitive`）
+  直接跳过且不读取内容；没有纯文本类型（`text/plain*`、`UTF8_STRING`、`STRING`、`TEXT`）时不翻译，HTML 也不当原文。
 
 ## 定位与布局
 

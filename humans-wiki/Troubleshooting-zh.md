@@ -13,8 +13,9 @@
 工具读的是 Wayland **PRIMARY** 选区（`wl-paste --primary`），不是普通剪贴板。
 
 - 看看应用到底给了什么：选中一段文字，再运行 `wl-paste --primary --no-newline`。
-- 有些应用只写普通剪贴板，PDF 阅读器最常见——在 [orbit-translate#1](https://github.com/WALKERKILLER/orbit-translate/issues/1) 跟踪（由 [Nyxuri#142](https://github.com/ech678/Nyxuri/issues/142) 迁来）。
-- `capture_primary = false` 会彻底关闭捕获，改回 `true`。
+- 有些应用只写普通剪贴板，PDF 阅读器最常见（[orbit-translate#1](https://github.com/WALKERKILLER/orbit-translate/issues/1)，由 [Nyxuri#142](https://github.com/ech678/Nyxuri/issues/142) 迁来）。这时 PRIMARY 里还是你**上一次**的选区，浮窗会翻出旧内容。选中后按 `Ctrl+C`，再运行 `orbit-translate.py --clipboard`（可以绑成 `Alt+Shift+E`，见 [首页](Home-zh)）。
+- `--clipboard` 会跳过密码管理器标记为密码的内容（KeePassXC、`wl-copy --sensitive`），且不读取它；复制的是图片等非文本时也不会翻译。
+- `capture_primary = false` 会关闭 PRIMARY 捕获，改回 `true`。它不影响 `--clipboard`。
 
 ## 没有结果
 
